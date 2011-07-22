@@ -8,6 +8,17 @@
 
 #import <CoreData/CoreData.h>
 
+/*
+ Core usage:
+ 
+ // Get a JSONString from an NSManagedObject to send it off to a server
+ NSString *JSONString = [aManagedObject cj_JSONRepresentation];
+ 
+ // Turn a JSONString from a server back into a NSManagedObject:
+ NSManagedObject *myManagedObject = [NSManagedObject cj_insertInMangedObjectContext:managedObjectContext fromJSONString:JSONString];
+ 
+ */
+
 @interface NSManagedObject (CoreDataJSON)
 
 #pragma mark - Serialization
