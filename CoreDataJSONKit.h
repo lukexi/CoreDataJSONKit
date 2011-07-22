@@ -9,13 +9,26 @@
 #import <CoreData/CoreData.h>
 
 /*
- Core usage:
+ -Core usage:
  
  // Get a JSONString from an NSManagedObject to send it off to a server
  NSString *JSONString = [aManagedObject cj_JSONRepresentation];
  
  // Turn a JSONString from a server back into a NSManagedObject:
  NSManagedObject *myManagedObject = [NSManagedObject cj_insertInMangedObjectContext:managedObjectContext fromJSONString:JSONString];
+ 
+ 
+ -Advanced usage:
+ To Serialize and deserialize Core Data "Transformable" attributes, add a category on the class implementing:
+ 
+ + (id)cj_objectFromJSONRepresentation:(id)JSONRepresentation;
+ - (id)cj_JSONRepresentation;
+ 
+ and then, in the userInfo dictionary for the attribute, add a "class" key with the name of the class as the value (e.g. UIColor)
+ 
+ UIColor is supported by default as a transformable attribute, so you can see an example of how to implement the transformations at the bottom of this file.
+ 
+ NOTE: NSDate is already supported for serialization and deserialization as a special case, using Core Data's "Date" attribute type.
  
  */
 
@@ -25,10 +38,6 @@
 - (NSString *)cj_JSONRepresentation;
 
 - (NSDictionary *)cj_dictionaryRepresentation;
-
-// Override these to exclude keys from serialization
-- (NSArray *)cj_attributeKeysForDictionaryRepresentation;
-- (NSArray *)cj_relationshipKeysForDictionaryRepresentation;
 
 #pragma mark - Deserialization
 + (id)cj_insertInManagedObjectContext:(NSManagedObjectContext *)context

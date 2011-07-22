@@ -16,6 +16,8 @@
 
 // Serialization
 - (NSDictionary *)cj_dictionaryRepresentationIgnoringTraversedRelationships:(NSMutableArray *)traversedRelationships;
+- (NSArray *)cj_attributeKeysForDictionaryRepresentation;
+- (NSArray *)cj_relationshipKeysForDictionaryRepresentation;
 
 // Deserialization
 - (void)cj_setAttributesFromDescription:(NSDictionary *)objectDescription;
