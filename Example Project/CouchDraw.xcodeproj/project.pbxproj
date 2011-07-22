@@ -1,0 +1,380 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C2FA169D13D8C0E40052D940 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FA169C13D8C0E40052D940 /* UIKit.framework */; };
+		C2FA169F13D8C0E40052D940 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FA169E13D8C0E40052D940 /* Foundation.framework */; };
+		C2FA16A113D8C0E40052D940 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FA16A013D8C0E40052D940 /* CoreGraphics.framework */; };
+		C2FA16A313D8C0E40052D940 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FA16A213D8C0E40052D940 /* CoreData.framework */; };
+		C2FA16A913D8C0E40052D940 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2FA16A713D8C0E40052D940 /* InfoPlist.strings */; };
+		C2FA16AB13D8C0E40052D940 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16AA13D8C0E40052D940 /* main.m */; };
+		C2FA16AF13D8C0E40052D940 /* CouchDrawAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16AE13D8C0E40052D940 /* CouchDrawAppDelegate.m */; };
+		C2FA16B213D8C0E40052D940 /* CouchDraw.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16B013D8C0E40052D940 /* CouchDraw.xcdatamodeld */; };
+		C2FA16BD13D8C27E0052D940 /* CDDrawingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16BB13D8C27E0052D940 /* CDDrawingViewController.m */; };
+		C2FA16BE13D8C27E0052D940 /* CDDrawingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C2FA16BC13D8C27E0052D940 /* CDDrawingViewController.xib */; };
+		C2FA16D813D8F49A0052D940 /* CDDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16D713D8F49A0052D940 /* CDDrawingView.m */; };
+		C2FA16F013D922810052D940 /* UIColor+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16EF13D922800052D940 /* UIColor+Additions.m */; };
+		C2FA16F613D941A00052D940 /* CoreDataJSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16F313D941A00052D940 /* CoreDataJSONKit.m */; };
+		C2FA16F713D941A00052D940 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16F513D941A00052D940 /* JSONKit.m */; };
+		C2FA16FD13D94C9D0052D940 /* CDDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16FB13D94C9C0052D940 /* CDDemoViewController.m */; };
+		C2FA16FE13D94C9D0052D940 /* CDDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C2FA16FC13D94C9C0052D940 /* CDDemoViewController.xib */; };
+		C2FA170F13D951880052D940 /* _CDDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA170413D951880052D940 /* _CDDrawing.m */; };
+		C2FA171013D951880052D940 /* _CDPath.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA170613D951880052D940 /* _CDPath.m */; };
+		C2FA171113D951880052D940 /* _CDPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA170813D951880052D940 /* _CDPoint.m */; };
+		C2FA171213D951880052D940 /* CDDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA170A13D951880052D940 /* CDDrawing.m */; };
+		C2FA171313D951880052D940 /* CDPath.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA170C13D951880052D940 /* CDPath.m */; };
+		C2FA171413D951880052D940 /* CDPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA170E13D951880052D940 /* CDPoint.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C2FA169813D8C0E40052D940 /* CouchDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CouchDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2FA169C13D8C0E40052D940 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		C2FA169E13D8C0E40052D940 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C2FA16A013D8C0E40052D940 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		C2FA16A213D8C0E40052D940 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		C2FA16A613D8C0E40052D940 /* CouchDraw-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CouchDraw-Info.plist"; sourceTree = "<group>"; };
+		C2FA16A813D8C0E40052D940 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C2FA16AA13D8C0E40052D940 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C2FA16AC13D8C0E40052D940 /* CouchDraw-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CouchDraw-Prefix.pch"; sourceTree = "<group>"; };
+		C2FA16AD13D8C0E40052D940 /* CouchDrawAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CouchDrawAppDelegate.h; sourceTree = "<group>"; };
+		C2FA16AE13D8C0E40052D940 /* CouchDrawAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CouchDrawAppDelegate.m; sourceTree = "<group>"; };
+		C2FA16B113D8C0E40052D940 /* CouchDraw.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CouchDraw.xcdatamodel; sourceTree = "<group>"; };
+		C2FA16BA13D8C27E0052D940 /* CDDrawingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDrawingViewController.h; sourceTree = "<group>"; };
+		C2FA16BB13D8C27E0052D940 /* CDDrawingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDrawingViewController.m; sourceTree = "<group>"; };
+		C2FA16BC13D8C27E0052D940 /* CDDrawingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CDDrawingViewController.xib; sourceTree = "<group>"; };
+		C2FA16D613D8F49A0052D940 /* CDDrawingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDrawingView.h; sourceTree = "<group>"; };
+		C2FA16D713D8F49A0052D940 /* CDDrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDrawingView.m; sourceTree = "<group>"; };
+		C2FA16EE13D922800052D940 /* UIColor+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Additions.h"; sourceTree = "<group>"; };
+		C2FA16EF13D922800052D940 /* UIColor+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Additions.m"; sourceTree = "<group>"; };
+		C2FA16F213D941A00052D940 /* CoreDataJSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataJSONKit.h; path = ../../../GitHub/CoreDataJSONKit/CoreDataJSONKit.h; sourceTree = "<group>"; };
+		C2FA16F313D941A00052D940 /* CoreDataJSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataJSONKit.m; path = ../../../GitHub/CoreDataJSONKit/CoreDataJSONKit.m; sourceTree = "<group>"; };
+		C2FA16F413D941A00052D940 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = ../../../GitHub/CoreDataJSONKit/JSONKit.h; sourceTree = "<group>"; };
+		C2FA16F513D941A00052D940 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = ../../../GitHub/CoreDataJSONKit/JSONKit.m; sourceTree = "<group>"; };
+		C2FA16FA13D94C9B0052D940 /* CDDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDemoViewController.h; sourceTree = "<group>"; };
+		C2FA16FB13D94C9C0052D940 /* CDDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDemoViewController.m; sourceTree = "<group>"; };
+		C2FA16FC13D94C9C0052D940 /* CDDemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CDDemoViewController.xib; sourceTree = "<group>"; };
+		C2FA170313D951880052D940 /* _CDDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _CDDrawing.h; path = "CouchDraw/Managed Objects/_CDDrawing.h"; sourceTree = "<group>"; };
+		C2FA170413D951880052D940 /* _CDDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _CDDrawing.m; path = "CouchDraw/Managed Objects/_CDDrawing.m"; sourceTree = "<group>"; };
+		C2FA170513D951880052D940 /* _CDPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _CDPath.h; path = "CouchDraw/Managed Objects/_CDPath.h"; sourceTree = "<group>"; };
+		C2FA170613D951880052D940 /* _CDPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _CDPath.m; path = "CouchDraw/Managed Objects/_CDPath.m"; sourceTree = "<group>"; };
+		C2FA170713D951880052D940 /* _CDPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _CDPoint.h; path = "CouchDraw/Managed Objects/_CDPoint.h"; sourceTree = "<group>"; };
+		C2FA170813D951880052D940 /* _CDPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _CDPoint.m; path = "CouchDraw/Managed Objects/_CDPoint.m"; sourceTree = "<group>"; };
+		C2FA170913D951880052D940 /* CDDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDDrawing.h; path = "CouchDraw/Managed Objects/CDDrawing.h"; sourceTree = "<group>"; };
+		C2FA170A13D951880052D940 /* CDDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDDrawing.m; path = "CouchDraw/Managed Objects/CDDrawing.m"; sourceTree = "<group>"; };
+		C2FA170B13D951880052D940 /* CDPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDPath.h; path = "CouchDraw/Managed Objects/CDPath.h"; sourceTree = "<group>"; };
+		C2FA170C13D951880052D940 /* CDPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDPath.m; path = "CouchDraw/Managed Objects/CDPath.m"; sourceTree = "<group>"; };
+		C2FA170D13D951880052D940 /* CDPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDPoint.h; path = "CouchDraw/Managed Objects/CDPoint.h"; sourceTree = "<group>"; };
+		C2FA170E13D951880052D940 /* CDPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDPoint.m; path = "CouchDraw/Managed Objects/CDPoint.m"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C2FA169513D8C0E40052D940 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2FA169D13D8C0E40052D940 /* UIKit.framework in Frameworks */,
+				C2FA169F13D8C0E40052D940 /* Foundation.framework in Frameworks */,
+				C2FA16A113D8C0E40052D940 /* CoreGraphics.framework in Frameworks */,
+				C2FA16A313D8C0E40052D940 /* CoreData.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C2FA168D13D8C0E40052D940 = {
+			isa = PBXGroup;
+			children = (
+				C2FA171613D951900052D940 /* Managed Objects */,
+				C2FA16FA13D94C9B0052D940 /* CDDemoViewController.h */,
+				C2FA16FB13D94C9C0052D940 /* CDDemoViewController.m */,
+				C2FA16FC13D94C9C0052D940 /* CDDemoViewController.xib */,
+				C2FA16A413D8C0E40052D940 /* CouchDraw */,
+				C2FA169B13D8C0E40052D940 /* Frameworks */,
+				C2FA169913D8C0E40052D940 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C2FA169913D8C0E40052D940 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C2FA169813D8C0E40052D940 /* CouchDraw.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C2FA169B13D8C0E40052D940 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C2FA169C13D8C0E40052D940 /* UIKit.framework */,
+				C2FA169E13D8C0E40052D940 /* Foundation.framework */,
+				C2FA16A013D8C0E40052D940 /* CoreGraphics.framework */,
+				C2FA16A213D8C0E40052D940 /* CoreData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C2FA16A413D8C0E40052D940 /* CouchDraw */ = {
+			isa = PBXGroup;
+			children = (
+				C2FA16F113D928BD0052D940 /* CDJSONKit */,
+				C2FA16AD13D8C0E40052D940 /* CouchDrawAppDelegate.h */,
+				C2FA16AE13D8C0E40052D940 /* CouchDrawAppDelegate.m */,
+				C2FA16BA13D8C27E0052D940 /* CDDrawingViewController.h */,
+				C2FA16BB13D8C27E0052D940 /* CDDrawingViewController.m */,
+				C2FA16BC13D8C27E0052D940 /* CDDrawingViewController.xib */,
+				C2FA16D613D8F49A0052D940 /* CDDrawingView.h */,
+				C2FA16D713D8F49A0052D940 /* CDDrawingView.m */,
+				C2FA16B013D8C0E40052D940 /* CouchDraw.xcdatamodeld */,
+				C2FA16EE13D922800052D940 /* UIColor+Additions.h */,
+				C2FA16EF13D922800052D940 /* UIColor+Additions.m */,
+				C2FA16A513D8C0E40052D940 /* Supporting Files */,
+			);
+			path = CouchDraw;
+			sourceTree = "<group>";
+		};
+		C2FA16A513D8C0E40052D940 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C2FA16A613D8C0E40052D940 /* CouchDraw-Info.plist */,
+				C2FA16A713D8C0E40052D940 /* InfoPlist.strings */,
+				C2FA16AA13D8C0E40052D940 /* main.m */,
+				C2FA16AC13D8C0E40052D940 /* CouchDraw-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C2FA16F113D928BD0052D940 /* CDJSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				C2FA16F213D941A00052D940 /* CoreDataJSONKit.h */,
+				C2FA16F313D941A00052D940 /* CoreDataJSONKit.m */,
+				C2FA16F413D941A00052D940 /* JSONKit.h */,
+				C2FA16F513D941A00052D940 /* JSONKit.m */,
+			);
+			name = CDJSONKit;
+			sourceTree = "<group>";
+		};
+		C2FA171613D951900052D940 /* Managed Objects */ = {
+			isa = PBXGroup;
+			children = (
+				C2FA170313D951880052D940 /* _CDDrawing.h */,
+				C2FA170413D951880052D940 /* _CDDrawing.m */,
+				C2FA170513D951880052D940 /* _CDPath.h */,
+				C2FA170613D951880052D940 /* _CDPath.m */,
+				C2FA170713D951880052D940 /* _CDPoint.h */,
+				C2FA170813D951880052D940 /* _CDPoint.m */,
+				C2FA170913D951880052D940 /* CDDrawing.h */,
+				C2FA170A13D951880052D940 /* CDDrawing.m */,
+				C2FA170B13D951880052D940 /* CDPath.h */,
+				C2FA170C13D951880052D940 /* CDPath.m */,
+				C2FA170D13D951880052D940 /* CDPoint.h */,
+				C2FA170E13D951880052D940 /* CDPoint.m */,
+			);
+			name = "Managed Objects";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C2FA169713D8C0E40052D940 /* CouchDraw */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2FA16B513D8C0E40052D940 /* Build configuration list for PBXNativeTarget "CouchDraw" */;
+			buildPhases = (
+				C2FA169413D8C0E40052D940 /* Sources */,
+				C2FA169513D8C0E40052D940 /* Frameworks */,
+				C2FA169613D8C0E40052D940 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CouchDraw;
+			productName = CouchDraw;
+			productReference = C2FA169813D8C0E40052D940 /* CouchDraw.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C2FA168F13D8C0E40052D940 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C2FA169213D8C0E40052D940 /* Build configuration list for PBXProject "CouchDraw" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C2FA168D13D8C0E40052D940;
+			productRefGroup = C2FA169913D8C0E40052D940 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C2FA169713D8C0E40052D940 /* CouchDraw */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C2FA169613D8C0E40052D940 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2FA16A913D8C0E40052D940 /* InfoPlist.strings in Resources */,
+				C2FA16BE13D8C27E0052D940 /* CDDrawingViewController.xib in Resources */,
+				C2FA16FE13D94C9D0052D940 /* CDDemoViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C2FA169413D8C0E40052D940 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2FA16AB13D8C0E40052D940 /* main.m in Sources */,
+				C2FA16AF13D8C0E40052D940 /* CouchDrawAppDelegate.m in Sources */,
+				C2FA16B213D8C0E40052D940 /* CouchDraw.xcdatamodeld in Sources */,
+				C2FA16BD13D8C27E0052D940 /* CDDrawingViewController.m in Sources */,
+				C2FA16D813D8F49A0052D940 /* CDDrawingView.m in Sources */,
+				C2FA16F013D922810052D940 /* UIColor+Additions.m in Sources */,
+				C2FA16F613D941A00052D940 /* CoreDataJSONKit.m in Sources */,
+				C2FA16F713D941A00052D940 /* JSONKit.m in Sources */,
+				C2FA16FD13D94C9D0052D940 /* CDDemoViewController.m in Sources */,
+				C2FA170F13D951880052D940 /* _CDDrawing.m in Sources */,
+				C2FA171013D951880052D940 /* _CDPath.m in Sources */,
+				C2FA171113D951880052D940 /* _CDPoint.m in Sources */,
+				C2FA171213D951880052D940 /* CDDrawing.m in Sources */,
+				C2FA171313D951880052D940 /* CDPath.m in Sources */,
+				C2FA171413D951880052D940 /* CDPoint.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		C2FA16A713D8C0E40052D940 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C2FA16A813D8C0E40052D940 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C2FA16B313D8C0E40052D940 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C2FA16B413D8C0E40052D940 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C2FA16B613D8C0E40052D940 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CouchDraw/CouchDraw-Prefix.pch";
+				INFOPLIST_FILE = "CouchDraw/CouchDraw-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C2FA16B713D8C0E40052D940 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CouchDraw/CouchDraw-Prefix.pch";
+				INFOPLIST_FILE = "CouchDraw/CouchDraw-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C2FA169213D8C0E40052D940 /* Build configuration list for PBXProject "CouchDraw" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2FA16B313D8C0E40052D940 /* Debug */,
+				C2FA16B413D8C0E40052D940 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2FA16B513D8C0E40052D940 /* Build configuration list for PBXNativeTarget "CouchDraw" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2FA16B613D8C0E40052D940 /* Debug */,
+				C2FA16B713D8C0E40052D940 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C2FA16B013D8C0E40052D940 /* CouchDraw.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C2FA16B113D8C0E40052D940 /* CouchDraw.xcdatamodel */,
+			);
+			currentVersion = C2FA16B113D8C0E40052D940 /* CouchDraw.xcdatamodel */;
+			path = CouchDraw.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = C2FA168F13D8C0E40052D940 /* Project object */;
+}

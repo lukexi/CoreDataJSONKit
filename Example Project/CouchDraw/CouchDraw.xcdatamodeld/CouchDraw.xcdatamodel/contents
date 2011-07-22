@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="848" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="CDDrawing" representedClassName="CDDrawing">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="paths" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDPath" inverseName="drawing" inverseEntity="CDPath"/>
+    </entity>
+    <entity name="CDPath" representedClassName="CDPath">
+        <attribute name="color" optional="YES" attributeType="Transformable">
+            <userInfo>
+                <entry key="class" value="UIColor"/>
+            </userInfo>
+        </attribute>
+        <relationship name="drawing" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDDrawing" inverseName="paths" inverseEntity="CDDrawing"/>
+        <relationship name="points" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDPoint" inverseName="path" inverseEntity="CDPoint"/>
+    </entity>
+    <entity name="CDPoint" representedClassName="CDPoint">
+        <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="x" optional="YES" attributeType="Integer 32" defaultValueString="0.0"/>
+        <attribute name="y" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <relationship name="path" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="CDPath" inverseName="points" inverseEntity="CDPath"/>
+    </entity>
+    <elements>
+        <element name="CDDrawing" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="CDPath" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="CDPoint" positionX="160" positionY="192" width="128" height="105"/>
+    </elements>
+</model>
