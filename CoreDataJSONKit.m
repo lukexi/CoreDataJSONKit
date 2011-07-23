@@ -255,14 +255,13 @@
 
 - (id)cj_JSONRepresentation
 {
-    CGFloat red, green, blue, alpha;
-    [self getRed:&red green:&green blue:&blue alpha:&alpha];
+    const CGFloat *components = CGColorGetComponents(self.CGColor);
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithFloat:red], kRedKey, 
-            [NSNumber numberWithFloat:green], kGreenKey,
-            [NSNumber numberWithFloat:blue], kBlueKey,
-            [NSNumber numberWithFloat:alpha], kAlphaKey,
+            [NSNumber numberWithFloat:components[0]], kRedKey, 
+            [NSNumber numberWithFloat:components[1]], kGreenKey,
+            [NSNumber numberWithFloat:components[2]], kBlueKey,
+            [NSNumber numberWithFloat:components[3]], kAlphaKey,
             nil];
 }
 
