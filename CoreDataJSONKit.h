@@ -35,8 +35,7 @@
 @interface NSManagedObject (CoreDataJSON)
 
 #pragma mark - Serialization
-- (NSString *)cj_JSONRepresentation;
-
+- (NSString *)cj_JSONString;
 - (NSDictionary *)cj_dictionaryRepresentation;
 
 #pragma mark - Deserialization
@@ -44,6 +43,15 @@
                 fromObjectDescription:(NSDictionary *)objectDescription;
 + (id)cj_insertInManagedObjectContext:(NSManagedObjectContext *)context
                        fromJSONString:(NSString *)JSONString;
+
+- (void)cj_setPropertiesFromDescription:(NSDictionary *)objectDescription; // Can be used to update an object
+
+@end
+
+@interface NSDictionary (CDAdditions)
+
+- (NSString *)cj_JSONString;
+- (NSData *)cj_JSONData;
 
 @end
 

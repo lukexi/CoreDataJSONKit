@@ -25,6 +25,14 @@
 @synthesize managedObjectContext;
 @synthesize drawing;
 
+- (void)dealloc 
+{
+    [currentPath release];
+    [managedObjectContext release];
+    [drawing release];
+    [super dealloc];
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -54,7 +62,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanRecognizer:)];
+    UIPanGestureRecognizer *recognizer = [[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanRecognizer:)] autorelease];
     [self.view addGestureRecognizer:recognizer];
 }
 
@@ -108,7 +116,7 @@
 
 - (IBAction)printJSON:(id)sender 
 {
-    NSString *JSONRepresentation = [self.drawing cj_JSONRepresentation];
+    NSString *JSONRepresentation = [self.drawing cj_JSONString];
     NSLog(@"Dictionary Rep! %@", JSONRepresentation);
     CDDrawing *replacedDrawing = [NSManagedObject cj_insertInManagedObjectContext:self.managedObjectContext fromJSONString:JSONRepresentation];
     NSLog(@"Replaced object! %@", replacedDrawing);

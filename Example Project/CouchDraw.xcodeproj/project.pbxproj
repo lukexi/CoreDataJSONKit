@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C2DEC0E613DA8DF10017FEDB /* CoreDataJSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C2DEC0E313DA8DF10017FEDB /* CoreDataJSONKit.m */; };
+		C2DEC0E713DA8DF10017FEDB /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C2DEC0E513DA8DF10017FEDB /* JSONKit.m */; };
 		C2FA169D13D8C0E40052D940 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FA169C13D8C0E40052D940 /* UIKit.framework */; };
 		C2FA169F13D8C0E40052D940 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FA169E13D8C0E40052D940 /* Foundation.framework */; };
 		C2FA16A113D8C0E40052D940 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FA16A013D8C0E40052D940 /* CoreGraphics.framework */; };
@@ -19,8 +21,6 @@
 		C2FA16BE13D8C27E0052D940 /* CDDrawingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C2FA16BC13D8C27E0052D940 /* CDDrawingViewController.xib */; };
 		C2FA16D813D8F49A0052D940 /* CDDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16D713D8F49A0052D940 /* CDDrawingView.m */; };
 		C2FA16F013D922810052D940 /* UIColor+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16EF13D922800052D940 /* UIColor+Additions.m */; };
-		C2FA16F613D941A00052D940 /* CoreDataJSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16F313D941A00052D940 /* CoreDataJSONKit.m */; };
-		C2FA16F713D941A00052D940 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16F513D941A00052D940 /* JSONKit.m */; };
 		C2FA16FD13D94C9D0052D940 /* CDDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA16FB13D94C9C0052D940 /* CDDemoViewController.m */; };
 		C2FA16FE13D94C9D0052D940 /* CDDemoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C2FA16FC13D94C9C0052D940 /* CDDemoViewController.xib */; };
 		C2FA170F13D951880052D940 /* _CDDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = C2FA170413D951880052D940 /* _CDDrawing.m */; };
@@ -32,6 +32,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C2DEC0E213DA8DF10017FEDB /* CoreDataJSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataJSONKit.h; path = ../CoreDataJSONKit.h; sourceTree = "<group>"; };
+		C2DEC0E313DA8DF10017FEDB /* CoreDataJSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataJSONKit.m; path = ../CoreDataJSONKit.m; sourceTree = "<group>"; };
+		C2DEC0E413DA8DF10017FEDB /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = ../JSONKit.h; sourceTree = "<group>"; };
+		C2DEC0E513DA8DF10017FEDB /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = ../JSONKit.m; sourceTree = "<group>"; };
 		C2FA169813D8C0E40052D940 /* CouchDraw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CouchDraw.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2FA169C13D8C0E40052D940 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C2FA169E13D8C0E40052D940 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -51,10 +55,6 @@
 		C2FA16D713D8F49A0052D940 /* CDDrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDrawingView.m; sourceTree = "<group>"; };
 		C2FA16EE13D922800052D940 /* UIColor+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Additions.h"; sourceTree = "<group>"; };
 		C2FA16EF13D922800052D940 /* UIColor+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Additions.m"; sourceTree = "<group>"; };
-		C2FA16F213D941A00052D940 /* CoreDataJSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataJSONKit.h; path = ../../../GitHub/CoreDataJSONKit/CoreDataJSONKit.h; sourceTree = "<group>"; };
-		C2FA16F313D941A00052D940 /* CoreDataJSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataJSONKit.m; path = ../../../GitHub/CoreDataJSONKit/CoreDataJSONKit.m; sourceTree = "<group>"; };
-		C2FA16F413D941A00052D940 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = ../../../GitHub/CoreDataJSONKit/JSONKit.h; sourceTree = "<group>"; };
-		C2FA16F513D941A00052D940 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = ../../../GitHub/CoreDataJSONKit/JSONKit.m; sourceTree = "<group>"; };
 		C2FA16FA13D94C9B0052D940 /* CDDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDemoViewController.h; sourceTree = "<group>"; };
 		C2FA16FB13D94C9C0052D940 /* CDDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDemoViewController.m; sourceTree = "<group>"; };
 		C2FA16FC13D94C9C0052D940 /* CDDemoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CDDemoViewController.xib; sourceTree = "<group>"; };
@@ -87,9 +87,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C2DEC0E813DA8DF80017FEDB /* CoreDataJSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				C2DEC0E213DA8DF10017FEDB /* CoreDataJSONKit.h */,
+				C2DEC0E313DA8DF10017FEDB /* CoreDataJSONKit.m */,
+				C2DEC0E413DA8DF10017FEDB /* JSONKit.h */,
+				C2DEC0E513DA8DF10017FEDB /* JSONKit.m */,
+			);
+			name = CoreDataJSONKit;
+			sourceTree = "<group>";
+		};
 		C2FA168D13D8C0E40052D940 = {
 			isa = PBXGroup;
 			children = (
+				C2DEC0E813DA8DF80017FEDB /* CoreDataJSONKit */,
 				C2FA171613D951900052D940 /* Managed Objects */,
 				C2FA16FA13D94C9B0052D940 /* CDDemoViewController.h */,
 				C2FA16FB13D94C9C0052D940 /* CDDemoViewController.m */,
@@ -122,7 +134,6 @@
 		C2FA16A413D8C0E40052D940 /* CouchDraw */ = {
 			isa = PBXGroup;
 			children = (
-				C2FA16F113D928BD0052D940 /* CDJSONKit */,
 				C2FA16AD13D8C0E40052D940 /* CouchDrawAppDelegate.h */,
 				C2FA16AE13D8C0E40052D940 /* CouchDrawAppDelegate.m */,
 				C2FA16BA13D8C27E0052D940 /* CDDrawingViewController.h */,
@@ -147,17 +158,6 @@
 				C2FA16AC13D8C0E40052D940 /* CouchDraw-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		C2FA16F113D928BD0052D940 /* CDJSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				C2FA16F213D941A00052D940 /* CoreDataJSONKit.h */,
-				C2FA16F313D941A00052D940 /* CoreDataJSONKit.m */,
-				C2FA16F413D941A00052D940 /* JSONKit.h */,
-				C2FA16F513D941A00052D940 /* JSONKit.m */,
-			);
-			name = CDJSONKit;
 			sourceTree = "<group>";
 		};
 		C2FA171613D951900052D940 /* Managed Objects */ = {
@@ -245,8 +245,6 @@
 				C2FA16BD13D8C27E0052D940 /* CDDrawingViewController.m in Sources */,
 				C2FA16D813D8F49A0052D940 /* CDDrawingView.m in Sources */,
 				C2FA16F013D922810052D940 /* UIColor+Additions.m in Sources */,
-				C2FA16F613D941A00052D940 /* CoreDataJSONKit.m in Sources */,
-				C2FA16F713D941A00052D940 /* JSONKit.m in Sources */,
 				C2FA16FD13D94C9D0052D940 /* CDDemoViewController.m in Sources */,
 				C2FA170F13D951880052D940 /* _CDDrawing.m in Sources */,
 				C2FA171013D951880052D940 /* _CDPath.m in Sources */,
@@ -254,6 +252,8 @@
 				C2FA171213D951880052D940 /* CDDrawing.m in Sources */,
 				C2FA171313D951880052D940 /* CDPath.m in Sources */,
 				C2FA171413D951880052D940 /* CDPoint.m in Sources */,
+				C2DEC0E613DA8DF10017FEDB /* CoreDataJSONKit.m in Sources */,
+				C2DEC0E713DA8DF10017FEDB /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +276,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -291,7 +290,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -302,7 +301,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_ENABLE_OBJC_ARC = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -310,7 +308,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -25,25 +25,49 @@
 
 @end
 
-@implementation NSManagedObject (CoreDataJSON)
+@implementation NSDictionary (CDAdditions)
 
-#pragma mark - Serialization (NSManagedObject => JSON String)
-
-- (NSString *)cj_JSONRepresentation
+- (NSString *)cj_JSONString
 {
-    NSDictionary *dictionary = [self cj_dictionaryRepresentation];
-    
     NSError *error = nil;
-    NSString *JSONString = [dictionary JSONStringWithOptions:JKSerializeOptionNone 
-                       serializeUnsupportedClassesUsingBlock:^id(id object) 
+    NSString *JSONString = [self JSONStringWithOptions:JKSerializeOptionNone 
+                 serializeUnsupportedClassesUsingBlock:^id(id object) 
     {
         return [object cj_JSONRepresentation];
     } error:&error];
     
-    if (!JSONString) {
-        NSLog(@"error! %@", error);
+    if (!JSONString) 
+    {
+        NSLog(@"CoreDataJSONKit: Error serializing! %@", error);
     }
     return JSONString;
+}
+
+- (NSData *)cj_JSONData
+{
+    NSError *error = nil;
+    NSData *JSONData = [self JSONDataWithOptions:JKSerializeOptionNone 
+                 serializeUnsupportedClassesUsingBlock:^id(id object) 
+                            {
+                                return [object cj_JSONRepresentation];
+                            } error:&error];
+    
+    if (!JSONData) 
+    {
+        NSLog(@"CoreDataJSONKit: Error serializing! %@", error);
+    }
+    return JSONData;
+}
+
+@end
+
+@implementation NSManagedObject (CoreDataJSON)
+
+#pragma mark - Serialization (NSManagedObject => JSON String)
+
+- (NSString *)cj_JSONString
+{
+    return [[self cj_dictionaryRepresentation] cj_JSONString];
 }
 
 - (NSDictionary *)cj_dictionaryRepresentation
@@ -130,10 +154,15 @@
     NSManagedObject *managedObject = [NSEntityDescription insertNewObjectForEntityForName:entityName 
                                                                    inManagedObjectContext:context];
     
-    [managedObject cj_setAttributesFromDescription:objectDescription];
-    [managedObject cj_setRelationshipsFromDescription:objectDescription];
+    [managedObject cj_setPropertiesFromDescription:objectDescription];
     
     return managedObject;
+}
+
+- (void)cj_setPropertiesFromDescription:(NSDictionary *)objectDescription
+{
+    [self cj_setAttributesFromDescription:objectDescription];
+    [self cj_setRelationshipsFromDescription:objectDescription];
 }
 
 - (void)cj_setAttributesFromDescription:(NSDictionary *)objectDescription

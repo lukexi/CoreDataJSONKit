@@ -70,12 +70,13 @@
     [drawingViewController2 release];
     [textView1 release];
     [textView2 release];
+    [managedObjectContext release];
     [super dealloc];
 }
 
 - (IBAction)sendDrawing1ToJSON1:(id)sender 
 {
-    self.textView1.text = [self.drawingViewController1.drawing cj_JSONRepresentation];
+    self.textView1.text = [self.drawingViewController1.drawing cj_JSONString];
 }
 
 - (IBAction)sendJSON1ToDrawing2:(id)sender 
@@ -86,7 +87,7 @@
 
 - (IBAction)sendDrawing2ToJSON2:(id)sender 
 {
-    self.textView2.text = [self.drawingViewController2.drawing cj_JSONRepresentation];
+    self.textView2.text = [self.drawingViewController2.drawing cj_JSONString];
 }
 
 - (IBAction)sendJSON2ToDrawing1:(id)sender 

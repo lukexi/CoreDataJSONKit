@@ -22,14 +22,25 @@
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 @synthesize demoViewController;
 
+- (void)dealloc 
+{
+    [demoViewController release];
+    [_window release];
+    [__managedObjectContext release];
+    [__managedObjectModel release];
+    [__persistentStoreCoordinator release];
+    [super dealloc];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    self.demoViewController = [[CDDemoViewController alloc] initWithNibName:@"CDDemoViewController" bundle:nil];
+    self.demoViewController = [[[CDDemoViewController alloc] initWithNibName:@"CDDemoViewController"
+                                                                      bundle:nil] autorelease];
     self.demoViewController.managedObjectContext = self.managedObjectContext;
     self.demoViewController.view.frame = self.window.bounds;
     [self.window addSubview:self.demoViewController.view];
