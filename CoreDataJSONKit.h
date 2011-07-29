@@ -7,7 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
-
+#import "JSONKit.h"
 /*
  -Core usage:
  
@@ -31,6 +31,9 @@
  NOTE: NSDate is already supported for serialization and deserialization as a special case, using Core Data's "Date" attribute type.
  
  */
+
+#define kCJEntityNameKey @"CJEntityName"
+#define kCJAttributeClassKey @"class"
 
 @interface NSManagedObject (CoreDataJSON)
 

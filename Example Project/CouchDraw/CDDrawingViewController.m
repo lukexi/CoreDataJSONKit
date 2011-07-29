@@ -98,6 +98,7 @@
         default:
             break;
     }
+    
     [self.view setNeedsDisplay];
 }
 

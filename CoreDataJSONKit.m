@@ -7,10 +7,6 @@
 //
 
 #import "CoreDataJSONKit.h"
-#import "JSONKit.h"
-
-#define kCJEntityNameKey @"CJEntityName"
-#define kCJAttributeClassKey @"class"
 
 @interface NSManagedObject ()
 
@@ -22,6 +18,8 @@
 // Deserialization
 - (void)cj_setAttributesFromDescription:(NSDictionary *)objectDescription;
 - (void)cj_setRelationshipsFromDescription:(NSDictionary *)objectDescription;
+
+- (void)cj_saveAndRefresh;
 
 @end
 
@@ -144,11 +142,11 @@
                     fromJSONString:(NSString *)JSONString
 {
     return [self cj_insertInManagedObjectContext:context 
-                        fromObjectDescription:[JSONString objectFromJSONString]];
+                           fromObjectDescription:[JSONString objectFromJSONString]];
 }
 
 + (id)cj_insertInManagedObjectContext:(NSManagedObjectContext *)context
-             fromObjectDescription:(NSDictionary *)objectDescription
+                fromObjectDescription:(NSDictionary *)objectDescription
 {
     NSString *entityName = [objectDescription objectForKey:kCJEntityNameKey];
     NSManagedObject *managedObject = [NSEntityDescription insertNewObjectForEntityForName:entityName 
@@ -172,22 +170,45 @@
          NSAttributeDescription *attributeDescription = obj;
          NSAttributeType attributeType = [attributeDescription attributeType];
          id unserializedObject = nil;
+         id objectForKey = [objectDescription objectForKey:key];
+         
+         if (!objectForKey) 
+         {
+             return;
+         }
+         
          if (attributeType == NSTransformableAttributeType) 
          {
-             NSString *representation = [objectDescription objectForKey:key];
              NSString *className = [[attributeDescription userInfo] objectForKey:kCJAttributeClassKey];
-             NSAssert3(className, @"Must provide a key '%@' in the userInfo for attribute %@ to tell CDJSONKit what class of object it should create for the representation: %@", kCJAttributeClassKey, key, representation);
-             unserializedObject = [NSClassFromString(className) cj_objectFromJSONRepresentation:representation];
+             NSAssert3(className, @"Must provide a key '%@' in the userInfo for attribute %@ to tell CDJSONKit what class of object it should create for the representation: %@", kCJAttributeClassKey, key, objectForKey);
+             Class attributeClass = NSClassFromString(className);
+             // If the objectForKey is already the same type as what the attribute declares, we're done!
+             if ([objectForKey isKindOfClass:attributeClass]) 
+             {
+                 unserializedObject = objectForKey;
+             }
+             else
+             {
+                 // Otherwise, it's an intermediate representation and we can parse it further here.
+                 unserializedObject = [attributeClass cj_objectFromJSONRepresentation:objectForKey];
+             }
          }
          else if (attributeType == NSDateAttributeType)
          {
-             id representation = [objectDescription objectForKey:key];
-             unserializedObject = [NSDate cj_objectFromJSONRepresentation:representation];
+             if ([objectForKey isKindOfClass:[NSDate class]]) 
+             {
+                 unserializedObject = objectForKey;
+             }
+             else
+             {
+                 unserializedObject = [NSDate cj_objectFromJSONRepresentation:objectForKey];
+             }
          }
          else
          {
-             unserializedObject = [objectDescription objectForKey:key];
+             unserializedObject = objectForKey;
          }
+         
          if (unserializedObject && ![unserializedObject isKindOfClass:[NSNull class]]) 
          {
              [self setValue:unserializedObject forKey:key];
@@ -198,6 +219,7 @@
 - (void)cj_setRelationshipsFromDescription:(NSDictionary *)objectDescription
 {
     [[[self entity] relationshipsByName] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        
         NSRelationshipDescription *relationshipDescription = obj;
         
         if (![objectDescription objectForKey:key]) 
@@ -217,7 +239,7 @@
                 NSAssert1([childObjectDescription isKindOfClass:[NSDictionary class]], @"Expected child object description for single member of to-many relationship to be NSDictionary, but it's: %@", childObjectDescription);
                 
                 NSManagedObject *childObject = [NSManagedObject cj_insertInManagedObjectContext:[self managedObjectContext] 
-                                                                       fromObjectDescription:childObjectDescription];
+                                                                          fromObjectDescription:childObjectDescription];
                 [objectSet addObject:childObject];
             }
             [self setValue:objectSet forKey:key];
@@ -229,9 +251,23 @@
             NSManagedObject *childObject = [NSManagedObject cj_insertInManagedObjectContext:[self managedObjectContext] 
                                                                       fromObjectDescription:childObjectDescription];
             
-            [self setValue:childObject forKey:key];           
+            [self setValue:childObject forKey:key];
         }
     }];
+}
+
+- (void)cj_saveAndRefresh
+{
+    NSError *error = nil;
+    BOOL success = [self.managedObjectContext save:&error];
+    if (!success) 
+    {
+        NSLog(@"Error saving during import: %@", error);
+    }
+    for (NSManagedObject *object in [self.managedObjectContext registeredObjects]) 
+    {
+        [self.managedObjectContext refreshObject:object mergeChanges:NO];
+    }
 }
 
 @end
