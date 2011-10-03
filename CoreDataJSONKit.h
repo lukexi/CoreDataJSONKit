@@ -76,3 +76,10 @@
 + (NSDateFormatter *)cj_outputFormatter;
 
 @end
+
+@interface NSURL (CJAdditions)
+
++ (id)cj_objectFromJSONRepresentation:(id)JSONRepresentation;
+- (id)cj_JSONRepresentation;
+
+@end

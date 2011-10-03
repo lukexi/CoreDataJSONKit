@@ -180,7 +180,7 @@
          if (attributeType == NSTransformableAttributeType) 
          {
              NSString *className = [[attributeDescription userInfo] objectForKey:kCJAttributeClassKey];
-             NSAssert3(className, @"Must provide a key '%@' in the userInfo for attribute %@ to tell CDJSONKit what class of object it should create for the representation: %@", kCJAttributeClassKey, key, objectForKey);
+             NSAssert3(className, @"Must provide a key '%@' in the userInfo for transformable attribute '%@' to tell CDJSONKit what class of object it should create for the representation: %@", kCJAttributeClassKey, key, objectForKey);
              Class attributeClass = NSClassFromString(className);
              // If the objectForKey is already the same type as what the attribute declares, we're done!
              if ([objectForKey isKindOfClass:attributeClass]) 
@@ -328,3 +328,16 @@
 
 @end
 
+@implementation NSURL (CJAdditions)
+
++ (id)cj_objectFromJSONRepresentation:(id)JSONRepresentation
+{
+    return [NSURL URLWithString:JSONRepresentation];
+}
+
+- (id)cj_JSONRepresentation
+{
+    return [self absoluteString];
+}
+
+@end
