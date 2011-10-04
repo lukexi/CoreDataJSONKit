@@ -111,9 +111,17 @@
         else
         {
             NSManagedObject *relatedObject = [self valueForKey:relationshipName];
-            [propertiesDictionary setObject:[relatedObject cj_dictionaryRepresentationIgnoringTraversedRelationships:
-                                             traversedRelationships] 
-                                        forKey:relationshipName];
+            if (relatedObject) 
+            {
+                [propertiesDictionary setObject:[relatedObject cj_dictionaryRepresentationIgnoringTraversedRelationships:
+                                                 traversedRelationships] 
+                                         forKey:relationshipName];
+            }
+            else
+            {
+                [propertiesDictionary setObject:[NSDictionary dictionary] 
+                                         forKey:relationshipName]; 
+            }
         }        
     }
     
@@ -247,11 +255,19 @@
         else
         {
             NSDictionary *childObjectDescription = [objectDescription objectForKey:key];
-            NSAssert1([childObjectDescription isKindOfClass:[NSDictionary class]], @"Expected child object description for to-one relationship to be NSDictionary, but it's: %@", childObjectDescription);
-            NSManagedObject *childObject = [NSManagedObject cj_insertInManagedObjectContext:[self managedObjectContext] 
-                                                                      fromObjectDescription:childObjectDescription];
             
-            [self setValue:childObject forKey:key];
+            if ([childObjectDescription count]) 
+            {
+                NSAssert1([childObjectDescription isKindOfClass:[NSDictionary class]], @"Expected child object description for to-one relationship to be NSDictionary, but it's: %@", childObjectDescription);
+                NSManagedObject *childObject = [NSManagedObject cj_insertInManagedObjectContext:[self managedObjectContext] 
+                                                                          fromObjectDescription:childObjectDescription];
+                
+                [self setValue:childObject forKey:key];
+            }
+            else
+            {
+                [self setValue:nil forKey:key];
+            }
         }
     }];
 }
