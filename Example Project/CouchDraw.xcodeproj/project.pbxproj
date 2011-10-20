@@ -204,6 +204,9 @@
 /* Begin PBXProject section */
 		C2FA168F13D8C0E40052D940 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = C2FA169213D8C0E40052D940 /* Build configuration list for PBXProject "CouchDraw" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;

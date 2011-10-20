@@ -96,6 +96,7 @@
 
 @end
 
+
 @interface NSURL (CJAdditions) <CJJSONRepresentation>
 
 @end
