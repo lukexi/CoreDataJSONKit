@@ -1,6 +1,6 @@
 //
-//  CJManagedObject.m
-//  CouchDraw
+//  CoreDataJSONKit.m
+//  CoreDataJSONKit
 //
 //  Created by Luke Iannini on 7/21/11.
 //  Copyright 2011 Hello, Chair Inc. All rights reserved.
@@ -12,14 +12,29 @@
 
 // Serialization
 - (NSDictionary *)cj_dictionaryRepresentationIgnoringTraversedRelationships:(NSMutableArray *)traversedRelationships;
+// Serialization Helpers
 - (NSArray *)cj_attributeKeysForDictionaryRepresentation;
 - (NSArray *)cj_relationshipKeysForDictionaryRepresentation;
-
+- (NSMutableArray *)cj_objectRepresentationsForRelationship:(NSString *)relationshipName 
+                                  traversedRelationships:(NSMutableArray *)traversedRelationships;
+- (void)cj_addAttributesToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary;
+- (void)cj_addRelationshipsToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary 
+                           traversedRelationships:(NSMutableArray *)traversedRelationships;
+- (id)cj_representationForRelatedObject:(NSManagedObject *)relatedObject 
+                 traversedRelationships:(NSMutableArray *)traversedRelationships;
 // Deserialization
 - (void)cj_setAttributesFromDescription:(NSDictionary *)objectDescription;
 - (void)cj_setRelationshipsFromDescription:(NSDictionary *)objectDescription;
 
 - (void)cj_saveAndRefresh;
+
++ (NSManagedObject *)cj_objectInManagedObjectContext:(NSManagedObjectContext *)context
+                                      withEntityName:(NSString *)entityName
+                               fromObjectDescription:(id)objectDescription;
+
++ (NSString *)cj_uniqueIDWithKey:(NSString *)key fromObjectDescription:(id)objectDescription;
++ (NSString *)cj_uniqueIDKeyForEntityForName:(NSString *)entityName
+                      inManagedObjectContext:(NSManagedObjectContext *)context;
 
 @end
 
@@ -27,28 +42,26 @@
 
 - (NSString *)cj_JSONString
 {
+    /*
+     iOS4
     NSError *error = nil;
-    NSString *JSONString = [self JSONStringWithOptions:JKSerializeOptionNone 
-                 serializeUnsupportedClassesUsingBlock:^id(id object) 
-    {
-        return [object cj_JSONRepresentation];
-    } error:&error];
+    NSString *JSONString = [self JSONStringWithOptions:JKSerializeOptionNone error:&error];
+     */
+    NSString *JSONString = [[NSString alloc] initWithData:[self cj_JSONData] encoding:NSUTF8StringEncoding];
     
-    if (!JSONString) 
-    {
-        NSLog(@"CoreDataJSONKit: Error serializing! %@", error);
-    }
     return JSONString;
 }
 
 - (NSData *)cj_JSONData
 {
     NSError *error = nil;
-    NSData *JSONData = [self JSONDataWithOptions:JKSerializeOptionNone 
-                 serializeUnsupportedClassesUsingBlock:^id(id object) 
-                            {
-                                return [object cj_JSONRepresentation];
-                            } error:&error];
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:self options:0 error:&error];
+    
+    /*
+     iOS4
+     NSError *error = nil;
+     NSData *JSONData = [self JSONDataWithOptions:JKSerializeOptionNone error:&error];
+     */
     
     if (!JSONData) 
     {
@@ -78,6 +91,31 @@
     traversedRelationships = traversedRelationships ?: [NSMutableArray array];
     NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
     
+    [propertiesDictionary setObject:[[self entity] name] forKey:kCJEntityNameKey];
+    
+    [self cj_addRelationshipsToPropertiesDictionary:propertiesDictionary 
+                             traversedRelationships:traversedRelationships];
+    
+    [self cj_addAttributesToPropertiesDictionary:propertiesDictionary];
+    
+    return propertiesDictionary;
+}
+
+#pragma mark - Serialization Helpers
+
+- (NSArray *)cj_attributeKeysForDictionaryRepresentation
+{
+    return [[[self entity] attributesByName] allKeys];
+}
+
+- (NSArray *)cj_relationshipKeysForDictionaryRepresentation
+{
+    return [[[self entity] relationshipsByName] allKeys];
+}
+
+- (void)cj_addRelationshipsToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary 
+                           traversedRelationships:(NSMutableArray *)traversedRelationships
+{
     NSDictionary *relationshipsByName = [[self entity] relationshipsByName];
     for (NSString *relationshipName in [self cj_relationshipKeysForDictionaryRepresentation]) 
     {
@@ -95,15 +133,8 @@
         
         if ([relationship isToMany]) 
         {
-            NSSet *relatedObjects = [self valueForKey:relationshipName];
-            
-            NSMutableArray *objectDictionaries = [NSMutableArray arrayWithCapacity:[relatedObjects count]];
-            for (NSManagedObject *relatedObject in relatedObjects)
-            {
-                NSDictionary *dictionaryRepresentation = [relatedObject cj_dictionaryRepresentationIgnoringTraversedRelationships:
-                                                          traversedRelationships];
-                [objectDictionaries addObject:dictionaryRepresentation];
-            }
+            NSMutableArray *objectDictionaries = [self cj_objectRepresentationsForRelationship:relationshipName 
+                                                                     traversedRelationships:traversedRelationships];
             
             [propertiesDictionary setObject:objectDictionaries 
                                      forKey:relationshipName];
@@ -111,38 +142,115 @@
         else
         {
             NSManagedObject *relatedObject = [self valueForKey:relationshipName];
-            [propertiesDictionary setObject:[relatedObject cj_dictionaryRepresentationIgnoringTraversedRelationships:
-                                             traversedRelationships] 
-                                        forKey:relationshipName];
-        }        
+            if (relatedObject) 
+            {
+                id representation = [self cj_representationForRelatedObject:relatedObject 
+                                                     traversedRelationships:traversedRelationships];
+                if (representation) 
+                {
+                    [propertiesDictionary setObject:representation
+                                             forKey:relationshipName];
+                }
+            }
+            else
+            {
+                // We use the empty dictionary, '{}' to represent nil to-one relationships
+                [propertiesDictionary setObject:[NSDictionary dictionary] 
+                                         forKey:relationshipName]; 
+            }
+        }
     }
-    
-    NSDictionary *attributesDictionary = [self dictionaryWithValuesForKeys:[self cj_attributeKeysForDictionaryRepresentation]];
-    
-    [propertiesDictionary addEntriesFromDictionary:attributesDictionary];
-    
-    [propertiesDictionary setObject:[[self entity] name] forKey:kCJEntityNameKey];
-    
-    return propertiesDictionary;
 }
 
-- (NSArray *)cj_attributeKeysForDictionaryRepresentation
+- (void)cj_addAttributesToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary
 {
-    return [[[self entity] attributesByName] allKeys];
+    for (NSString *attributeKey in [self cj_attributeKeysForDictionaryRepresentation]) 
+    {
+        id object = [self valueForKey:attributeKey];
+        if (!object) 
+        {
+            continue;
+        }
+        
+        id representation = nil;
+        
+        // NSJSONSerialization requires the object be wrapped in an NSArray or NSDictionary
+        BOOL objectHasJSONRepresentation = [NSJSONSerialization isValidJSONObject:[NSArray arrayWithObject:object]];
+        if (objectHasJSONRepresentation) 
+        {
+            representation = object;
+        }
+        else if ([object respondsToSelector:@selector(cj_JSONRepresentation)])
+        {
+            representation = [object cj_JSONRepresentation];
+        }
+        else
+        {
+            NSAssert2(NO, @"Don't know how to serialize object of class %@. Please implement cj_JSONReprentation in a category to return a valid JSON-encodable object (NSString, NSNumber, NSArray, NSDictionary, or NSNull). Object is: %@", [object class], object);
+        }
+        [propertiesDictionary setObject:representation forKey:attributeKey];
+    }
 }
 
-- (NSArray *)cj_relationshipKeysForDictionaryRepresentation
+- (NSMutableArray *)cj_objectRepresentationsForRelationship:(NSString *)relationshipName 
+                                  traversedRelationships:(NSMutableArray *)traversedRelationships
 {
-    return [[[self entity] relationshipsByName] allKeys];
+    NSSet *relatedObjects = [self valueForKey:relationshipName];
+    
+    NSMutableArray *objectDictionaries = [NSMutableArray arrayWithCapacity:[relatedObjects count]];
+    for (NSManagedObject *relatedObject in relatedObjects)
+    {
+        id representation = [self cj_representationForRelatedObject:relatedObject 
+                                             traversedRelationships:traversedRelationships];
+        if (representation) 
+        {
+            [objectDictionaries addObject:representation];
+        }
+    }
+    return objectDictionaries;
+}
+
+// Allow related objects to represent themselves differently when at the end of a relationship —
+// e.g., if a "Human" has a "Cars" relationship, the "Cars" objects can be represented
+// by just their IDs (e.g VIN number) when serializing the Human.
+// They can also return nil, or add a value in their entity's userInfo
+// for kCJEntityExcludeInRelationshipsKey, to be excluded from the serialization.
+- (id)cj_representationForRelatedObject:(NSManagedObject *)relatedObject 
+                 traversedRelationships:(NSMutableArray *)traversedRelationships
+{
+    if ([relatedObject conformsToProtocol:@protocol(CJRelationshipRepresentation)]) 
+    {
+        return [(NSManagedObject <CJRelationshipRepresentation> *)relatedObject cj_relationshipRepresentation];
+    }
+    else if ([[[relatedObject entity] userInfo] objectForKey:kCJEntityExcludeInRelationshipsKey])
+    {
+        return nil;
+    }
+    else
+    {
+        return [relatedObject cj_dictionaryRepresentationIgnoringTraversedRelationships:traversedRelationships];
+    }
+    return nil;
 }
 
 #pragma mark - Deserialization (JSON String => NSManagedObject)
 
 + (id)cj_insertInManagedObjectContext:(NSManagedObjectContext *)context
-                    fromJSONString:(NSString *)JSONString
+                       fromJSONString:(NSString *)JSONString
 {
+    /*
+     iOS4
     return [self cj_insertInManagedObjectContext:context 
                            fromObjectDescription:[JSONString objectFromJSONString]];
+     */
+    NSData *data = [JSONString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (!result) 
+    {
+        NSLog(@"Error parsing JSON string: %@", JSONString);
+    }
+    return [self cj_insertInManagedObjectContext:context fromObjectDescription:result];
 }
 
 + (id)cj_insertInManagedObjectContext:(NSManagedObjectContext *)context
@@ -163,6 +271,7 @@
     [self cj_setRelationshipsFromDescription:objectDescription];
 }
 
+// Loop through the managed object's entity's attributes and query the object description for keys matching those attributes.
 - (void)cj_setAttributesFromDescription:(NSDictionary *)objectDescription
 {    
     [[[self entity] attributesByName] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) 
@@ -180,7 +289,7 @@
          if (attributeType == NSTransformableAttributeType) 
          {
              NSString *className = [[attributeDescription userInfo] objectForKey:kCJAttributeClassKey];
-             NSAssert3(className, @"Must provide a key '%@' in the userInfo for attribute %@ to tell CDJSONKit what class of object it should create for the representation: %@", kCJAttributeClassKey, key, objectForKey);
+             NSAssert3(className, @"Must provide a key '%@' in the userInfo for transformable attribute '%@' to tell CDJSONKit what class of object it should create for the representation: %@", kCJAttributeClassKey, key, objectForKey);
              Class attributeClass = NSClassFromString(className);
              // If the objectForKey is already the same type as what the attribute declares, we're done!
              if ([objectForKey isKindOfClass:attributeClass]) 
@@ -216,6 +325,11 @@
      }];
 }
 
+// Loop through the managed object's entity's relationship names and query the object description for keys matching those names.
+// We expect an NSArray of NSDictionaries for to-many relationships, and a single NSDictionary for a to-one relationship.
+// Alternately, objects can implement the CJRelationshipRepresentation protocol to provide an alternate representation.
+// For example, if a Human has a Car, but only wants to represent the Car as a license plate rather than embedding the whole car
+// description into the Human.
 - (void)cj_setRelationshipsFromDescription:(NSDictionary *)objectDescription
 {
     [[[self entity] relationshipsByName] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -228,17 +342,26 @@
             return;
         }
         
+        NSString *entityName = [[relationshipDescription destinationEntity] name];
+        
         if ([relationshipDescription isToMany])
         {
             NSArray *childObjectDescriptions = [objectDescription objectForKey:key];
-            NSAssert1([childObjectDescriptions isKindOfClass:[NSArray class]], @"Expected child object description for to-many relationship to be NSArray, but it's: %@", childObjectDescriptions);
+            NSAssert1([childObjectDescriptions isKindOfClass:[NSArray class]], 
+                      @"Expected child object description for to-many relationship to be NSArray, but it's: %@", 
+                      childObjectDescriptions);
             
+            /* Since we are re-building the set of relationships, relationships that have
+             been deleted will be naturally removed. Though, their leaf objects will of course
+             still exist and will have to be cleaned up. It might be a good idea to keep
+             track of which ones are about to be removed and send them a message so they
+             have an opportunity to delete themselves if they're dangling.
+             */
             NSMutableSet *objectSet = [NSMutableSet setWithCapacity:[childObjectDescriptions count]];
-            for (NSDictionary *childObjectDescription in childObjectDescriptions) 
+            for (id childObjectDescription in childObjectDescriptions) 
             {
-                NSAssert1([childObjectDescription isKindOfClass:[NSDictionary class]], @"Expected child object description for single member of to-many relationship to be NSDictionary, but it's: %@", childObjectDescription);
-                
-                NSManagedObject *childObject = [NSManagedObject cj_insertInManagedObjectContext:[self managedObjectContext] 
+                NSManagedObject *childObject = [NSManagedObject cj_objectInManagedObjectContext:self.managedObjectContext 
+                                                                                 withEntityName:entityName
                                                                           fromObjectDescription:childObjectDescription];
                 [objectSet addObject:childObject];
             }
@@ -246,16 +369,84 @@
         }
         else
         {
-            NSDictionary *childObjectDescription = [objectDescription objectForKey:key];
-            NSAssert1([childObjectDescription isKindOfClass:[NSDictionary class]], @"Expected child object description for to-one relationship to be NSDictionary, but it's: %@", childObjectDescription);
-            NSManagedObject *childObject = [NSManagedObject cj_insertInManagedObjectContext:[self managedObjectContext] 
-                                                                      fromObjectDescription:childObjectDescription];
+            id childObjectDescription = [objectDescription objectForKey:key];
             
+            NSManagedObject *childObject = [NSManagedObject cj_objectInManagedObjectContext:self.managedObjectContext 
+                                                                             withEntityName:entityName
+                                                                      fromObjectDescription:childObjectDescription];
             [self setValue:childObject forKey:key];
         }
     }];
 }
 
+// We expect a uniqueID key (whose name is customizable by setting kCJEntityUniqueIDKey in the userInfo for the relevant entity) 
+// in a dictionary object description that represents a unique ID for the object we can use for create-or-update.
+// If it's not a dictionary object description, we expect it to be a string.
++ (NSString *)cj_uniqueIDWithKey:(NSString *)key 
+           fromObjectDescription:(id)objectDescription
+{
+    return [objectDescription isKindOfClass:[NSDictionary class]] ? 
+        [objectDescription valueForKey:key] : 
+        objectDescription;
+}
+
++ (NSString *)cj_uniqueIDKeyForEntityForName:(NSString *)entityName
+                      inManagedObjectContext:(NSManagedObjectContext *)context
+{
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:entityName inManagedObjectContext:context];
+    return [[entityDescription userInfo] objectForKey:kCJEntityUniqueIDKey];
+}
+
++ (NSManagedObject *)cj_objectInManagedObjectContext:(NSManagedObjectContext *)context
+                                      withEntityName:(NSString *)entityName
+                               fromObjectDescription:(id)objectDescription
+{
+    BOOL isDictionaryDescription = [objectDescription isKindOfClass:[NSDictionary class]];
+    NSAssert1(isDictionaryDescription || [objectDescription isKindOfClass:[NSString class]], 
+              @"Expected child object description for related object to be NSDictionary or NSString, but it's: %@", objectDescription);
+    
+    // Empty dictionaries represent nil values
+    if (isDictionaryDescription && ![objectDescription count]) 
+    {
+        return nil;
+    }
+    
+    // We allow a property to be marked as representing a unique ID for an object so it can be recognzied
+    // and updated if it already exists in the local datastore.
+    NSString *uniqueIDKey = [self cj_uniqueIDKeyForEntityForName:entityName inManagedObjectContext:context];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+    NSString *uniqueID = [self cj_uniqueIDWithKey:uniqueIDKey fromObjectDescription:objectDescription];
+    if (uniqueIDKey && uniqueID)
+    {
+        [request setPredicate:[NSPredicate predicateWithFormat:@"%K == %@", uniqueIDKey, uniqueID]];
+    }
+    NSError *error = nil;
+    NSArray *results = [context executeFetchRequest:request error:&error];
+    NSManagedObject *managedObject = nil;
+    if (![results count]) 
+    {
+        managedObject = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+    }
+    else
+    {
+        managedObject = [results objectAtIndex:0];
+    }
+    
+    // Update the object with the known description
+    if (isDictionaryDescription) 
+    {
+        [managedObject cj_setPropertiesFromDescription:objectDescription];
+    }
+    else if (uniqueIDKey && uniqueID)
+    {
+        // We just have the object's ID, so we create a placeholder object for you to fill in later.
+        [managedObject setValue:uniqueID forKey:uniqueIDKey];
+    }
+    return managedObject;
+}
+
+// This might be useful for reducing memory usage
 - (void)cj_saveAndRefresh
 {
     NSError *error = nil;
@@ -328,3 +519,16 @@
 
 @end
 
+@implementation NSURL (CJAdditions)
+
++ (id)cj_objectFromJSONRepresentation:(id)JSONRepresentation
+{
+    return [NSURL URLWithString:JSONRepresentation];
+}
+
+- (id)cj_JSONRepresentation
+{
+    return [self absoluteString];
+}
+
+@end
