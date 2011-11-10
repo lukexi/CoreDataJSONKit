@@ -38,10 +38,18 @@
  
  */
 
+// Annotations for your object model:
+
+// Used to encode and recognize entities
 #define kCJEntityNameKey @"documentType"
+// Used for transformable attributes, so we can transform to and from the CJJSONRepresentation of the class
 #define kCJAttributeClassKey @"class"
-#define kCJEntityUniqueIDKey @"CJEntityUniqueIDKey"
-#define kCJEntityExcludeInRelationshipsKey @"CJEntityExcludeInRelationshipsKey"
+// Used to skip an attribute or relationship entirely
+#define kCJPropertyIgnoreKey @"ignore"
+// Used to mark a property of an entity as being a unique identifier for that entity. E.g. CoreCouchKit uses this to represent related documents as simply their couchIDs. It's also useful for "baked-in" data that will always exist on the destination device.
+#define kCJEntityUniqueIDKey @"uniqueIDPropertyName"
+// Used to mark an entire entity as something that should not be automatically turned into JSON. E.g. CoreCouchKit uses this to skip relationships to attachments, because it handles those separately
+#define kCJEntityExcludeInRelationshipsKey @"excludeInRelationships"
 
 @interface NSManagedObject (CoreDataJSON)
 
@@ -76,14 +84,19 @@
 @end
 
 // Implement this to use a customized representation of an object
-// that's used when it's found in a relationship
+// that's used when it's found in a relationship. 
+// You only need this if you want a more complex representation, like a dictionary or array.
+// If you just want to represent the object as a string (or, any one of its properties??),
+// e.g. a unique ID, use the kCJEntityUniqueIDKey annotation in the entity's userInfo in the data model.
 @protocol CJRelationshipRepresentation <NSObject>
 
++ (NSManagedObject *)cj_objectFromRelationshipRepresentation:(id)relationshipRepresentation
+                                                   inContext:(NSManagedObjectContext *)managedObjectContext;
 - (id)cj_relationshipRepresentation;
 
 @end
 
-#pragma mark - JSON Reperesentation Categories
+#pragma mark - Default JSON Reperesentation Implementations
 
 @interface UIColor (CJAdditions) <CJJSONRepresentation>
 

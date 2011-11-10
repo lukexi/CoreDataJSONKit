@@ -8,20 +8,35 @@
 
 #import "CoreDataJSONKit.h"
 
+@interface CJObjectTraverser : NSObject
+
++ (CJObjectTraverser *)traverserForManagedObject:(NSManagedObject *)managedObject;
+
+@end
+
+@implementation CJObjectTraverser
+
++ (CJObjectTraverser *)traverserForManagedObject:(NSManagedObject *)managedObject
+{
+    return [[self alloc] init];
+}
+
+@end
+
 @interface NSManagedObject ()
 
 // Serialization
-- (NSDictionary *)cj_dictionaryRepresentationIgnoringTraversedRelationships:(NSMutableArray *)traversedRelationships;
+- (NSDictionary *)cj_dictionaryRepresentationIgnoringInverse:(NSRelationshipDescription *)ignoringInverse;
 // Serialization Helpers
-- (NSArray *)cj_attributeKeysForDictionaryRepresentation;
-- (NSArray *)cj_relationshipKeysForDictionaryRepresentation;
+- (NSArray *)cj_attributeKeys;
+- (NSArray *)cj_relationshipKeys;
 - (NSMutableArray *)cj_objectRepresentationsForRelationship:(NSString *)relationshipName 
-                                  traversedRelationships:(NSMutableArray *)traversedRelationships;
+                                            ignoringInverse:(NSRelationshipDescription *)ignoringInverse;
 - (void)cj_addAttributesToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary;
 - (void)cj_addRelationshipsToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary 
-                           traversedRelationships:(NSMutableArray *)traversedRelationships;
+                                  ignoringInverse:(NSRelationshipDescription *)ignoringInverse;
 - (id)cj_representationForRelatedObject:(NSManagedObject *)relatedObject 
-                 traversedRelationships:(NSMutableArray *)traversedRelationships;
+                        ignoringInverse:(NSRelationshipDescription *)ignoringInverse;
 // Deserialization
 - (void)cj_setAttributesFromDescription:(NSDictionary *)objectDescription;
 - (void)cj_setRelationshipsFromDescription:(NSDictionary *)objectDescription;
@@ -35,7 +50,8 @@
 + (NSString *)cj_uniqueIDWithKey:(NSString *)key fromObjectDescription:(id)objectDescription;
 + (NSString *)cj_uniqueIDKeyForEntityForName:(NSString *)entityName
                       inManagedObjectContext:(NSManagedObjectContext *)context;
-
++ (NSString *)cj_entityNameForObjectDescription:(id)objectDescription 
+                                   otherwiseUse:(NSString *)entityNameFromRelationshipDescription;
 @end
 
 @implementation NSDictionary (CDAdditions)
@@ -83,18 +99,19 @@
 
 - (NSDictionary *)cj_dictionaryRepresentation
 {
-    return [self cj_dictionaryRepresentationIgnoringTraversedRelationships:nil];
+    return [self cj_dictionaryRepresentationIgnoringInverse:nil];
 }
 
-- (NSDictionary *)cj_dictionaryRepresentationIgnoringTraversedRelationships:(NSMutableArray *)traversedRelationships
+- (NSDictionary *)cj_dictionaryRepresentationIgnoringInverse:(NSRelationshipDescription *)ignoringInverse
 {
-    traversedRelationships = traversedRelationships ?: [NSMutableArray array];
+    //NSLog(@"getting representation of %@", [self class]);
+    //NSLog(@"traversed: %@", ignoringInverse);
     NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
     
     [propertiesDictionary setObject:[[self entity] name] forKey:kCJEntityNameKey];
     
     [self cj_addRelationshipsToPropertiesDictionary:propertiesDictionary 
-                             traversedRelationships:traversedRelationships];
+                                    ignoringInverse:ignoringInverse];
     
     [self cj_addAttributesToPropertiesDictionary:propertiesDictionary];
     
@@ -103,40 +120,51 @@
 
 #pragma mark - Serialization Helpers
 
-- (NSArray *)cj_attributeKeysForDictionaryRepresentation
+- (NSArray *)cj_attributeKeys
 {
     return [[[self entity] attributesByName] allKeys];
 }
 
-- (NSArray *)cj_relationshipKeysForDictionaryRepresentation
+- (NSArray *)cj_relationshipKeys
 {
     return [[[self entity] relationshipsByName] allKeys];
 }
 
 - (void)cj_addRelationshipsToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary 
-                           traversedRelationships:(NSMutableArray *)traversedRelationships
+                                  ignoringInverse:(NSRelationshipDescription *)ignoringInverse
 {
+    NSLog(@"adding relationships for %@", [self class]);
     NSDictionary *relationshipsByName = [[self entity] relationshipsByName];
-    for (NSString *relationshipName in [self cj_relationshipKeysForDictionaryRepresentation]) 
+    for (NSString *relationshipName in [self cj_relationshipKeys]) 
     {
         NSRelationshipDescription *relationship = [relationshipsByName objectForKey:relationshipName];
         // Check our inverse to see if its a relationship we've already traveled down
-        NSRelationshipDescription *inverse = [relationship inverseRelationship];
-        if ([traversedRelationships containsObject:inverse]) 
+        
+        
+        //NSLog(@"Checking relationship: %@", relationship);
+        //NSLog(@"Inverse: %@", inverse);
+        NSLog(@"Traversing %@.%@=>%@?", [self class], relationshipName, [[relationship destinationEntity] name]);
+        if ([ignoringInverse isEqual:relationship]) 
         {
+            NSLog(@"SKIPPING INVERSE");
             // Skip it if so
             continue;
         }
+        NSLog(@"YEP");
         
-        // Otherwise mark ourselves as traversed so we can skip backlinks in the future
-        [traversedRelationships addObject:relationship];
+        NSRelationshipDescription *inverse = [relationship inverseRelationship];
+        
+        if ([[relationship userInfo] objectForKey:kCJPropertyIgnoreKey]) 
+        {
+            continue;
+        }
         
         if ([relationship isToMany]) 
         {
             NSMutableArray *objectDictionaries = [self cj_objectRepresentationsForRelationship:relationshipName 
-                                                                     traversedRelationships:traversedRelationships];
+                                                                               ignoringInverse:inverse];
             
-            [propertiesDictionary setObject:objectDictionaries 
+            [propertiesDictionary setObject:objectDictionaries
                                      forKey:relationshipName];
         }
         else
@@ -145,7 +173,7 @@
             if (relatedObject) 
             {
                 id representation = [self cj_representationForRelatedObject:relatedObject 
-                                                     traversedRelationships:traversedRelationships];
+                                                            ignoringInverse:inverse];
                 if (representation) 
                 {
                     [propertiesDictionary setObject:representation
@@ -164,10 +192,16 @@
 
 - (void)cj_addAttributesToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary
 {
-    for (NSString *attributeKey in [self cj_attributeKeysForDictionaryRepresentation]) 
+    for (NSString *attributeKey in [self cj_attributeKeys]) 
     {
         id object = [self valueForKey:attributeKey];
         if (!object) 
+        {
+            continue;
+        }
+        
+        if ([[[[[self entity] attributesByName] objectForKey:attributeKey] 
+              userInfo] objectForKey:kCJPropertyIgnoreKey]) 
         {
             continue;
         }
@@ -193,7 +227,7 @@
 }
 
 - (NSMutableArray *)cj_objectRepresentationsForRelationship:(NSString *)relationshipName 
-                                  traversedRelationships:(NSMutableArray *)traversedRelationships
+                                            ignoringInverse:(NSRelationshipDescription *)ignoringInverse
 {
     NSSet *relatedObjects = [self valueForKey:relationshipName];
     
@@ -201,7 +235,7 @@
     for (NSManagedObject *relatedObject in relatedObjects)
     {
         id representation = [self cj_representationForRelatedObject:relatedObject 
-                                             traversedRelationships:traversedRelationships];
+                                                    ignoringInverse:ignoringInverse];
         if (representation) 
         {
             [objectDictionaries addObject:representation];
@@ -216,19 +250,27 @@
 // They can also return nil, or add a value in their entity's userInfo
 // for kCJEntityExcludeInRelationshipsKey, to be excluded from the serialization.
 - (id)cj_representationForRelatedObject:(NSManagedObject *)relatedObject 
-                 traversedRelationships:(NSMutableArray *)traversedRelationships
+                        ignoringInverse:(NSRelationshipDescription *)ignoringInverse
 {
-    if ([relatedObject conformsToProtocol:@protocol(CJRelationshipRepresentation)]) 
+    NSDictionary *userInfo = [[relatedObject entity] userInfo];
+    NSString *uniqueIDPropertyName = [userInfo objectForKey:kCJEntityUniqueIDKey];
+    BOOL wantsToBeExcluded = [userInfo objectForKey:kCJEntityExcludeInRelationshipsKey] != nil;
+    if (uniqueIDPropertyName) 
+    {
+        NSLog(@"Using %@", [relatedObject valueForKey:uniqueIDPropertyName]);
+        return [relatedObject valueForKey:uniqueIDPropertyName];
+    }
+    else if ([relatedObject conformsToProtocol:@protocol(CJRelationshipRepresentation)]) 
     {
         return [(NSManagedObject <CJRelationshipRepresentation> *)relatedObject cj_relationshipRepresentation];
     }
-    else if ([[[relatedObject entity] userInfo] objectForKey:kCJEntityExcludeInRelationshipsKey])
+    else if (wantsToBeExcluded)
     {
         return nil;
     }
     else
     {
-        return [relatedObject cj_dictionaryRepresentationIgnoringTraversedRelationships:traversedRelationships];
+        return [relatedObject cj_dictionaryRepresentationIgnoringInverse:ignoringInverse];
     }
     return nil;
 }
@@ -286,6 +328,11 @@
              return;
          }
          
+         if ([[attributeDescription userInfo] objectForKey:kCJPropertyIgnoreKey]) 
+         {
+             return;
+         }
+         
          if (attributeType == NSTransformableAttributeType) 
          {
              NSString *className = [[attributeDescription userInfo] objectForKey:kCJAttributeClassKey];
@@ -332,8 +379,8 @@
 // description into the Human.
 - (void)cj_setRelationshipsFromDescription:(NSDictionary *)objectDescription
 {
-    [[[self entity] relationshipsByName] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        
+    [[[self entity] relationshipsByName] enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) 
+    {    
         NSRelationshipDescription *relationshipDescription = obj;
         
         if (![objectDescription objectForKey:key]) 
@@ -342,7 +389,12 @@
             return;
         }
         
-        NSString *entityName = [[relationshipDescription destinationEntity] name];
+        if ([[relationshipDescription userInfo] objectForKey:kCJPropertyIgnoreKey]) 
+        {
+            return;
+        }
+        
+        NSString *entityNameFromRelationshipDescription = [[relationshipDescription destinationEntity] name];
         
         if ([relationshipDescription isToMany])
         {
@@ -360,6 +412,9 @@
             NSMutableSet *objectSet = [NSMutableSet setWithCapacity:[childObjectDescriptions count]];
             for (id childObjectDescription in childObjectDescriptions) 
             {
+                NSString *entityName = [[self class] cj_entityNameForObjectDescription:childObjectDescription 
+                                                                          otherwiseUse:entityNameFromRelationshipDescription];
+                
                 NSManagedObject *childObject = [NSManagedObject cj_objectInManagedObjectContext:self.managedObjectContext 
                                                                                  withEntityName:entityName
                                                                           fromObjectDescription:childObjectDescription];
@@ -371,12 +426,29 @@
         {
             id childObjectDescription = [objectDescription objectForKey:key];
             
+            NSString *entityName = [[self class] cj_entityNameForObjectDescription:childObjectDescription 
+                                                                      otherwiseUse:entityNameFromRelationshipDescription];
+            
             NSManagedObject *childObject = [NSManagedObject cj_objectInManagedObjectContext:self.managedObjectContext 
                                                                              withEntityName:entityName
                                                                       fromObjectDescription:childObjectDescription];
             [self setValue:childObject forKey:key];
         }
     }];
+}
+
+// If the datamodel is using subentities, we can't rely on the relationshipDescription destinationEntity to
+// give us the specific subentity it should create. This means relationships using alternative objectDescriptions
+// (e.g. using a string ID) can't currently be to subentities.
++ (NSString *)cj_entityNameForObjectDescription:(id)objectDescription 
+                                   otherwiseUse:(NSString *)entityNameFromRelationshipDescription
+{
+    NSString *entityName = entityNameFromRelationshipDescription;
+    if ([objectDescription isKindOfClass:[NSDictionary class]]) 
+    {
+        entityName = [objectDescription objectForKey:kCJEntityNameKey] ?: entityName;
+    }
+    return entityName;
 }
 
 // We expect a uniqueID key (whose name is customizable by setting kCJEntityUniqueIDKey in the userInfo for the relevant entity) 
@@ -411,26 +483,28 @@
         return nil;
     }
     
+    NSManagedObject *managedObject;
+    
     // We allow a property to be marked as representing a unique ID for an object so it can be recognzied
     // and updated if it already exists in the local datastore.
     NSString *uniqueIDKey = [self cj_uniqueIDKeyForEntityForName:entityName inManagedObjectContext:context];
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
     NSString *uniqueID = [self cj_uniqueIDWithKey:uniqueIDKey fromObjectDescription:objectDescription];
     if (uniqueIDKey && uniqueID)
     {
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
         [request setPredicate:[NSPredicate predicateWithFormat:@"%K == %@", uniqueIDKey, uniqueID]];
+        NSError *error = nil;
+        NSArray *results = [context executeFetchRequest:request error:&error];
+        if ([results count]) 
+        {
+            managedObject = [results objectAtIndex:0];
+        }
     }
-    NSError *error = nil;
-    NSArray *results = [context executeFetchRequest:request error:&error];
-    NSManagedObject *managedObject = nil;
-    if (![results count]) 
+    
+    // Either we're not using uniquing or there was no object matching the uniqueID, so create one.
+    if (!managedObject) 
     {
         managedObject = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
-    }
-    else
-    {
-        managedObject = [results objectAtIndex:0];
     }
     
     // Update the object with the known description
@@ -440,7 +514,7 @@
     }
     else if (uniqueIDKey && uniqueID)
     {
-        // We just have the object's ID, so we create a placeholder object for you to fill in later.
+        // We just have the object's ID, so we create a placeholder object for you to fill in later (or, if this was a 'baked-in' object to the app, the managed object should already be complete)
         [managedObject setValue:uniqueID forKey:uniqueIDKey];
     }
     return managedObject;
