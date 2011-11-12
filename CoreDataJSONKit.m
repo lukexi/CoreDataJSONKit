@@ -133,7 +133,7 @@
 - (void)cj_addRelationshipsToPropertiesDictionary:(NSMutableDictionary *)propertiesDictionary 
                                   ignoringInverse:(NSRelationshipDescription *)ignoringInverse
 {
-    NSLog(@"adding relationships for %@", [self class]);
+    //NSLog(@"adding relationships for %@", [self class]);
     NSDictionary *relationshipsByName = [[self entity] relationshipsByName];
     for (NSString *relationshipName in [self cj_relationshipKeys]) 
     {
@@ -143,14 +143,14 @@
         
         //NSLog(@"Checking relationship: %@", relationship);
         //NSLog(@"Inverse: %@", inverse);
-        NSLog(@"Traversing %@.%@=>%@?", [self class], relationshipName, [[relationship destinationEntity] name]);
+        //NSLog(@"Traversing %@.%@=>%@?", [self class], relationshipName, [[relationship destinationEntity] name]);
         if ([ignoringInverse isEqual:relationship]) 
         {
-            NSLog(@"SKIPPING INVERSE");
+            //NSLog(@"SKIPPING INVERSE");
             // Skip it if so
             continue;
         }
-        NSLog(@"YEP");
+        //NSLog(@"YEP");
         
         NSRelationshipDescription *inverse = [relationship inverseRelationship];
         
@@ -257,7 +257,9 @@
     BOOL wantsToBeExcluded = [userInfo objectForKey:kCJEntityExcludeInRelationshipsKey] != nil;
     if (uniqueIDPropertyName) 
     {
-        NSLog(@"Using %@", [relatedObject valueForKey:uniqueIDPropertyName]);
+//        NSLog(@"Using %@ as unique ID for %@", 
+//              [relatedObject valueForKey:uniqueIDPropertyName], 
+//              [[relatedObject entity] name]);
         return [relatedObject valueForKey:uniqueIDPropertyName];
     }
     else if ([relatedObject conformsToProtocol:@protocol(CJRelationshipRepresentation)]) 
