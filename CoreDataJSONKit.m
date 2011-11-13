@@ -8,6 +8,7 @@
 
 #import "CoreDataJSONKit.h"
 
+// Unfinished sketch
 @interface CJObjectTraverser : NSObject
 
 + (CJObjectTraverser *)traverserForManagedObject:(NSManagedObject *)managedObject;

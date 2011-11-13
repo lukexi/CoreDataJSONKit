@@ -7,7 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
-
+#import <UIKit/UIKit.h>
 /*
  -Basic usage:
  
