@@ -88,6 +88,10 @@
 // You only need this if you want a more complex representation, like a dictionary or array.
 // If you just want to represent the object as a string (or, any one of its properties??),
 // e.g. a unique ID, use the kCJEntityUniqueIDKey annotation in the entity's userInfo in the data model.
+
+// NOTE: if you are using multiple subentities of the entity in a relationship, 
+// you must include the documentType key yourself in the cj_relationshipRepresentation (which must be a dictionary, in that case), 
+// or you'll get an instance of the base entity class!
 @protocol CJRelationshipRepresentation <NSObject>
 
 + (NSManagedObject *)cj_objectFromRelationshipRepresentation:(id)relationshipRepresentation

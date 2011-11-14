@@ -504,6 +504,13 @@
         }
     }
     
+    // We also allow an object to define its own 'relationshipRepresentation' by implementing the CJRelationshipRepresentation protocol
+    Class entityClass = NSClassFromString(entityName);
+    if ([entityClass respondsToSelector:@selector(cj_objectFromRelationshipRepresentation:inContext:)])
+    {
+        managedObject = [(Class <CJRelationshipRepresentation>)entityClass cj_objectFromRelationshipRepresentation:objectDescription inContext:context];
+    }
+    
     // Either we're not using uniquing or there was no object matching the uniqueID, so create one.
     if (!managedObject) 
     {
