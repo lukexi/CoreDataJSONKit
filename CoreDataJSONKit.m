@@ -553,11 +553,21 @@
 #define kGreenKey @"green"
 #define kBlueKey @"blue"
 #define kAlphaKey @"alpha"
+#define kWhiteKey @"white"
 
 @implementation UIColor (CJAdditions)
 
 + (id)cj_objectFromJSONRepresentation:(id)JSONRepresentation
 {
+    if ([JSONRepresentation isKindOfClass:[NSDictionary class]]) 
+    {
+        return nil;
+    }
+    if ([JSONRepresentation objectForKey:kWhiteKey]) 
+    {
+        return [UIColor colorWithWhite:[[JSONRepresentation objectForKey:kWhiteKey] floatValue] 
+                                 alpha:[[JSONRepresentation objectForKey:kAlphaKey] floatValue]];
+    }
     return [UIColor colorWithRed:[[JSONRepresentation objectForKey:kRedKey] floatValue] 
                            green:[[JSONRepresentation objectForKey:kGreenKey] floatValue] 
                             blue:[[JSONRepresentation objectForKey:kBlueKey] floatValue] 
@@ -566,14 +576,25 @@
 
 - (id)cj_JSONRepresentation
 {
-    const CGFloat *components = CGColorGetComponents(self.CGColor);
+    CGFloat red, green, blue, alpha, white;
+    if ([self getRed:&red green:&green blue:&blue alpha:&alpha])
+    {
+        return [NSDictionary dictionaryWithObjectsAndKeys:
+                [NSNumber numberWithFloat:red], kRedKey, 
+                [NSNumber numberWithFloat:green], kGreenKey,
+                [NSNumber numberWithFloat:blue], kBlueKey,
+                [NSNumber numberWithFloat:alpha], kAlphaKey,
+                nil];
+    }
+    else if ([self getWhite:&white alpha:&alpha])
+    {
+        return [NSDictionary dictionaryWithObjectsAndKeys:
+                [NSNumber numberWithFloat:white], kWhiteKey, 
+                [NSNumber numberWithFloat:alpha], kAlphaKey, 
+                nil];
+    }
+    return nil;
     
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithFloat:components[0]], kRedKey, 
-            [NSNumber numberWithFloat:components[1]], kGreenKey,
-            [NSNumber numberWithFloat:components[2]], kBlueKey,
-            [NSNumber numberWithFloat:components[3]], kAlphaKey,
-            nil];
 }
 
 @end
